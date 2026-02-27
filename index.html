@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de Herramientas</title>
+  <meta name="description" content="Panel de herramientas para la empresa y personales." />
+  <style>
+    :root{
+      --bg1:#0b1020;
+      --bg2:#0a1633;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.14);
+      --shadow: 0 18px 40px rgba(0,0,0,.45);
+      --radius: 18px;
+      --accent1:#7c3aed;
+      --accent2:#22c55e;
+      --accent3:#06b6d4;
+      --accent4:#f59e0b;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 18% 12%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 18%, rgba(34,197,94,.18), transparent 55%),
+        radial-gradient(900px 520px at 60% 90%, rgba(6,182,212,.18), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Decorative blobs */
+    .blob{
+      position:fixed;
+      inset:auto;
+      width:520px; height:520px;
+      filter: blur(60px);
+      opacity:.35;
+      z-index:-1;
+      border-radius:50%;
+      transform: translate3d(0,0,0);
+      animation: floaty 9s ease-in-out infinite;
+    }
+    .blob.b1{left:-140px; top:-160px; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,.9), transparent 55%);}
+    .blob.b2{right:-180px; top:-120px; background: radial-gradient(circle at 30% 30%, rgba(34,197,94,.85), transparent 55%); animation-delay: -2s;}
+    .blob.b3{left:35%; bottom:-260px; background: radial-gradient(circle at 30% 30%, rgba(6,182,212,.9), transparent 55%); animation-delay: -4s;}
+    @keyframes floaty{
+      0%,100%{ transform: translateY(0) }
+      50%{ transform: translateY(18px) }
+    }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 26px 18px 34px;
+    }
+
+    header{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+      justify-content:space-between;
+      padding: 18px 18px 10px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .brand h1{
+      margin:0;
+      font-size: clamp(20px, 3.2vw, 34px);
+      letter-spacing:.2px;
+      line-height:1.1;
+    }
+    .brand p{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width: 62ch;
+      font-size: 14px;
+      line-height:1.5;
+    }
+
+    .controls{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width: 240px;
+    }
+
+    .search{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0,0,0,.18);
+    }
+    .search span{opacity:.9}
+    .search input{
+      width:100%;
+      border:0;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .search input::placeholder{ color: rgba(255,255,255,.55); }
+
+    .pillrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+    }
+    .pill{
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.82);
+      user-select:none;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 0 0 6px rgba(255,255,255,.06);
+    }
+    .dot.purple{ background: var(--accent1); box-shadow: 0 0 0 6px rgba(124,58,237,.16); }
+    .dot.green{ background: var(--accent2); box-shadow: 0 0 0 6px rgba(34,197,94,.16); }
+    .dot.cyan{ background: var(--accent3); box-shadow: 0 0 0 6px rgba(6,182,212,.16); }
+    .dot.amber{ background: var(--accent4); box-shadow: 0 0 0 6px rgba(245,158,11,.16); }
+
+    main{
+      margin-top: 18px;
+      display:grid;
+      gap: 16px;
+    }
+
+    .section{
+      border:1px solid var(--line);
+      border-radius: calc(var(--radius) + 6px);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      overflow:hidden;
+    }
+
+    .sectionHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 16px 16px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+
+    .sectionTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .sectionSub{
+      margin:6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .count{
+      padding:8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.18);
+      border:1px solid var(--line);
+      font-size: 12px;
+      color: rgba(255,255,255,.85);
+      white-space:nowrap;
+    }
+
+    .grid{
+      padding: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 920px){
+      header{flex-direction:column; align-items:stretch}
+      .controls{min-width:unset}
+      .pillrow{justify-content:flex-start}
+      .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
+    }
+    @media (max-width: 560px){
+      .grid{grid-template-columns: 1fr;}
+    }
+
+    a.card{
+      text-decoration:none;
+      color: inherit;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding: 14px 14px 13px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    a.card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(520px 180px at 30% 0%, rgba(255,255,255,.12), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    a.card:hover{
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,.22);
+      background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.07));
+    }
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      position:relative;
+      z-index:1;
+    }
+
+    .name{
+      font-weight: 750;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+
+    .tag{
+      font-size: 12px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.20);
+      color: rgba(255,255,255,.86);
+      white-space:nowrap;
+    }
+
+    .desc{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+      position:relative;
+      z-index:1;
+    }
+
+    .cta{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color: rgba(255,255,255,.90);
+      font-size: 13px;
+      position:relative;
+      z-index:1;
+    }
+    .arrow{
+      width:26px;height:26px;
+      display:grid; place-items:center;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      transition: transform .18s ease;
+    }
+    a.card:hover .arrow{ transform: translateX(2px); }
+
+    footer{
+      margin-top: 16px;
+      padding: 14px 12px 4px;
+      text-align:center;
+      color: rgba(255,255,255,.65);
+      font-size: 12px;
+    }
+
+    .hint{
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.14);
+      color: rgba(255,255,255,.78);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      padding: 2px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.85);
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <h1>🧰 Panel de Herramientas</h1>
+        <p>
+          Acceso rápido a tus herramientas de empresa y personales. Solo agrega tus links en la lista (abajo) y listo 🚀
+        </p>
+        <div class="hint">
+          💡 Tip: Para agregar enlaces, busca <span class="kbd">LINK_AQUI</span> en el código y reemplaza con tu URL.
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search" title="Buscar herramienta">
+          <span>🔎</span>
+          <input id="q" type="text" placeholder="Buscar (ej: moto, rutina, trackings)..." autocomplete="off" />
+        </div>
+
+        <div class="pillrow">
+          <div class="pill"><span class="dot purple"></span> Empresa</div>
+          <div class="pill"><span class="dot green"></span> Personal</div>
+          <div class="pill"><span class="dot cyan"></span> Rápido</div>
+          <div class="pill"><span class="dot amber"></span> Ordenado</div>
+        </div>
+      </div>
+    </header>
+
+    <main id="app"></main>
+
+    <footer>
+      <div>✨ Creador: Brayan Raudales</div>
+      <div id="year"></div>
+    </footer>
+  </div>
+
+  <script>
+    // ==========================================================
+    // ✅ AQUÍ SOLO PEGAS TUS LINKS (donde dice: "LINK_AQUI")
+    // ==========================================================
+    const SECTIONS = [
+      {
+        title: "🏢 Herramientas para la Empresa",
+        subtitle: "Gestión, envíos, agua-marca, cargas, trackings e inventario.",
+        badge: "Empresa",
+        tools: [
+          {
+            name: "🧾 Deudas Entregador de Moto",
+            desc: "Control y registro de deudas del entregador.",
+            href: "www.deudasmoto.itemshn.com"
+          },
+          {
+            name: "🛵 Costos de Envío Moto",
+            desc: "Consulta rápida de tarifas por colonia / zona.",
+            href: "www.costoenvios.itemshn.com"
+          },
+          {
+            name: "🖼️ Fotos Marca Agua",
+            desc: "Marca tus fotos para evitar robos de imágenes.",
+            href: "www.fotos.itemshn.com/"
+          },
+          {
+            name: "📦 Calculadora de Cargas Peso/Volumen",
+            desc: "Calcula peso volumétrico vs peso real.",
+            href: "www.cajas.itemshn.com"
+          },
+          {
+            name: "📍 Seguimiento de Trackings y Encargos",
+            desc: "Monitorea paquetes, estados y encargos.",
+            href: "www.trackings.itemshn.com/"
+          },
+          {
+            name: "📋 Inventario",
+            desc: "Controla existencias, entradas y salidas.",
+            href: "LINK_AQUI"
+          }
+        ]
+      },
+      {
+        title: "👤 Herramientas personales",
+        subtitle: "Rutinas alimenticias y cuidado de Firulais 🐾",
+        badge: "Personal",
+        tools: [
+          {
+            name: "🥗 Rutina Alimenticia Ruperto",
+            desc: "Plan de comidas, porciones y horarios.",
+            href: "LINK_AQUI"
+          },
+          {
+            name: "🥑 Rutina Alimenticia AnaLicia",
+            desc: "Rutina diaria y objetivos nutricionales.",
+            href: "LINK_AQUI"
+          },
+          {
+            name: "🐶 Rutina Firulais",
+            desc: "Alimentación, paseo, vacunas y notas.",
+            href: "LINK_AQUI"
+          }
+        ]
+      }
+    ];
+
+    // Render
+    const app = document.getElementById("app");
+    const input = document.getElementById("q");
+
+    function safeHref(href) {
+      // Si no has puesto link todavía, dejamos "#"
+      if (!href || href === "LINK_AQUI") return "#";
+      return href;
+    }
+
+    function makeCard(tool, sectionBadge){
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = safeHref(tool.href);
+      a.target = (a.href === "#") ? "_self" : "_blank";
+      a.rel = "noopener noreferrer";
+
+      const topline = document.createElement("div");
+      topline.className = "topline";
+
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = tool.name;
+
+      const tag = document.createElement("div");
+      tag.className = "tag";
+      tag.textContent = sectionBadge;
+
+      topline.appendChild(name);
+      topline.appendChild(tag);
+
+      const desc = document.createElement("p");
+      desc.className = "desc";
+      desc.textContent = tool.desc || "Abrir herramienta.";
+
+      const cta = document.createElement("div");
+      cta.className = "cta";
+      cta.innerHTML = (a.href === "#")
+        ? `🧩 Agrega el link en el código <span class="arrow">➜</span>`
+        : `🚀 Abrir ahora <span class="arrow">➜</span>`;
+
+      a.appendChild(topline);
+      a.appendChild(desc);
+      a.appendChild(cta);
+
+      // Guardamos texto para búsqueda
+      a.dataset.search = `${tool.name} ${tool.desc} ${sectionBadge}`.toLowerCase();
+      return a;
+    }
+
+    function render(filter=""){
+      app.innerHTML = "";
+      const f = filter.trim().toLowerCase();
+
+      SECTIONS.forEach(sec => {
+        const section = document.createElement("section");
+        section.className = "section";
+
+        const head = document.createElement("div");
+        head.className = "sectionHead";
+
+        const left = document.createElement("div");
+        const h = document.createElement("h2");
+        h.className = "sectionTitle";
+        h.textContent = sec.title;
+
+        const sub = document.createElement("div");
+        sub.className = "sectionSub";
+        sub.textContent = sec.subtitle || "";
+
+        left.appendChild(h);
+        left.appendChild(sub);
+
+        const count = document.createElement("div");
+        count.className = "count";
+
+        const grid = document.createElement("div");
+        grid.className = "grid";
+
+        const cards = sec.tools
+          .map(t => makeCard(t, sec.badge))
+          .filter(card => !f || card.dataset.search.includes(f));
+
+        cards.forEach(c => grid.appendChild(c));
+
+        count.textContent = `📌 ${cards.length} herramienta(s)`;
+        head.appendChild(left);
+        head.appendChild(count);
+
+        section.appendChild(head);
+        section.appendChild(grid);
+
+        // Si con el filtro quedó vacío, ocultamos sección completa
+        if (cards.length > 0) app.appendChild(section);
+      });
+
+      // Si no hay nada
+      if (!app.children.length){
+        const empty = document.createElement("div");
+        empty.className = "hint";
+        empty.style.marginTop = "16px";
+        empty.textContent = "😅 No encontré resultados. Prueba con otra palabra (ej: moto, rutina, fotos, inventario).";
+        app.appendChild(empty);
+      }
+    }
+
+    input.addEventListener("input", () => render(input.value));
+    document.getElementById("year").textContent = `© ${new Date().getFullYear()} — Panel privado`;
+
+    render();
+  </script>
+</body>
+</html>
