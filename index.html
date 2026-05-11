@@ -4,592 +4,437 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Panel de Herramientas</title>
-  <meta name="description" content="Panel de herramientas para la empresa y personales." />
+  <meta name="description" content="Panel privado de herramientas." />
+
   <style>
     :root{
-      --bg1:#0b1020;
-      --bg2:#0a1633;
-      --card: rgba(255,255,255,.08);
-      --card2: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --line: rgba(255,255,255,.14);
-      --shadow: 0 18px 40px rgba(0,0,0,.45);
-      --radius: 18px;
-      --accent1:#7c3aed;
-      --accent2:#22c55e;
-      --accent3:#06b6d4;
-      --accent4:#f59e0b;
+      --bg1:#07111f;
+      --bg2:#0b1b33;
+      --panel:rgba(255,255,255,.075);
+      --panelLine:rgba(255,255,255,.13);
+      --btn1:#eaf8fb;
+      --btn2:#d8edf3;
+      --btnBorder:#a9d2dd;
+      --btnText:#07586e;
+      --btnText2:#063f55;
+      --shadow:0 10px 24px rgba(0,0,0,.28);
+      --glow:0 0 0 1px rgba(255,255,255,.10), 0 12px 28px rgba(0,0,0,.25);
+      --radius:22px;
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
+
+    html,body{
+      min-height:100%;
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
+    }
+
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:#fff;
       background:
-        radial-gradient(900px 520px at 18% 12%, rgba(124,58,237,.22), transparent 60%),
-        radial-gradient(900px 520px at 80% 18%, rgba(34,197,94,.18), transparent 55%),
-        radial-gradient(900px 520px at 60% 90%, rgba(6,182,212,.18), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+        radial-gradient(800px 500px at 12% -10%, rgba(0,191,255,.18), transparent 60%),
+        radial-gradient(900px 520px at 100% 0%, rgba(34,197,94,.15), transparent 60%),
+        radial-gradient(850px 560px at 50% 110%, rgba(124,58,237,.18), transparent 60%),
+        linear-gradient(180deg,var(--bg1),var(--bg2));
       overflow-x:hidden;
     }
 
-    /* Decorative blobs */
-    .blob{
+    body::before{
+      content:"";
       position:fixed;
-      inset:auto;
-      width:520px; height:520px;
-      filter: blur(60px);
-      opacity:.35;
-      z-index:-1;
-      border-radius:50%;
-      transform: translate3d(0,0,0);
-      animation: floaty 9s ease-in-out infinite;
-    }
-    .blob.b1{left:-140px; top:-160px; background: radial-gradient(circle at 30% 30%, rgba(124,58,237,.9), transparent 55%);}
-    .blob.b2{right:-180px; top:-120px; background: radial-gradient(circle at 30% 30%, rgba(34,197,94,.85), transparent 55%); animation-delay: -2s;}
-    .blob.b3{left:35%; bottom:-260px; background: radial-gradient(circle at 30% 30%, rgba(6,182,212,.9), transparent 55%); animation-delay: -4s;}
-    @keyframes floaty{
-      0%,100%{ transform: translateY(0) }
-      50%{ transform: translateY(18px) }
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size:42px 42px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.9), transparent 85%);
     }
 
     .wrap{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 26px 18px 34px;
+      width:min(1040px,94vw);
+      margin:0 auto;
+      padding:18px 0 28px;
     }
 
-    header{
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      padding:10px 0 14px;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+
+    .hero{
       display:flex;
-      gap:18px;
-      align-items:flex-start;
+      align-items:center;
       justify-content:space-between;
-      padding: 18px 18px 10px;
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      border-radius: calc(var(--radius) + 6px);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      gap:12px;
+      padding:14px;
+      border:1px solid var(--panelLine);
+      border-radius:24px;
+      background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.055));
+      box-shadow:var(--glow);
     }
 
-    .brand h1{
+    h1{
       margin:0;
-      font-size: clamp(20px, 3.2vw, 34px);
+      font-size:clamp(22px,4.6vw,34px);
+      line-height:1.05;
       letter-spacing:.2px;
-      line-height:1.1;
-    }
-    .brand p{
-      margin:8px 0 0;
-      color:var(--muted);
-      max-width: 62ch;
-      font-size: 14px;
-      line-height:1.5;
-    }
-
-    .controls{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-width: 240px;
+      white-space:nowrap;
     }
 
     .search{
+      width:min(420px,100%);
       display:flex;
       align-items:center;
-      gap:10px;
-      padding: 10px 12px;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(0,0,0,.18);
+      gap:8px;
+      padding:0 13px;
+      min-height:46px;
+      border-radius:17px;
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.13);
     }
-    .search span{opacity:.9}
+
+    .search span{
+      opacity:.9;
+    }
+
     .search input{
       width:100%;
       border:0;
-      outline:none;
-      background: transparent;
-      color: var(--text);
-      font-size: 14px;
+      outline:0;
+      color:#fff;
+      background:transparent;
+      font-size:15px;
+      font-weight:600;
     }
-    .search input::placeholder{ color: rgba(255,255,255,.55); }
 
-    .pillrow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:flex-end;
+    .search input::placeholder{
+      color:rgba(255,255,255,.62);
+      font-weight:500;
     }
-    .pill{
-      font-size:12px;
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.82);
-      user-select:none;
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .dot{
-      width:8px;height:8px;border-radius:999px;
-      background: rgba(255,255,255,.75);
-      box-shadow: 0 0 0 6px rgba(255,255,255,.06);
-    }
-    .dot.purple{ background: var(--accent1); box-shadow: 0 0 0 6px rgba(124,58,237,.16); }
-    .dot.green{ background: var(--accent2); box-shadow: 0 0 0 6px rgba(34,197,94,.16); }
-    .dot.cyan{ background: var(--accent3); box-shadow: 0 0 0 6px rgba(6,182,212,.16); }
-    .dot.amber{ background: var(--accent4); box-shadow: 0 0 0 6px rgba(245,158,11,.16); }
 
     main{
-      margin-top: 18px;
       display:grid;
-      gap: 16px;
+      gap:14px;
+      margin-top:4px;
     }
 
     .section{
-      border:1px solid var(--line);
-      border-radius: calc(var(--radius) + 6px);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      overflow:hidden;
+      padding:13px;
+      border:1px solid var(--panelLine);
+      border-radius:24px;
+      background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.045));
+      box-shadow:var(--shadow);
     }
 
     .sectionHead{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      padding: 16px 16px 12px;
-      border-bottom:1px solid rgba(255,255,255,.10);
+      gap:10px;
+      margin-bottom:10px;
+      padding:0 3px;
     }
 
     .sectionTitle{
-      display:flex;
-      align-items:center;
-      gap:10px;
       margin:0;
-      font-size: 18px;
+      font-size:15px;
+      line-height:1.2;
       letter-spacing:.2px;
-    }
-    .sectionSub{
-      margin:6px 0 0;
-      color: var(--muted);
-      font-size: 13px;
+      color:rgba(255,255,255,.90);
     }
 
     .count{
-      padding:8px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.18);
-      border:1px solid var(--line);
-      font-size: 12px;
-      color: rgba(255,255,255,.85);
-      white-space:nowrap;
+      flex:0 0 auto;
+      padding:5px 9px;
+      border-radius:999px;
+      color:rgba(255,255,255,.82);
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.11);
+      font-size:12px;
+      font-weight:800;
     }
 
     .grid{
-      padding: 14px;
       display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:9px;
     }
 
-    @media (max-width: 920px){
-      header{flex-direction:column; align-items:stretch}
-      .controls{min-width:unset}
-      .pillrow{justify-content:flex-start}
-      .grid{grid-template-columns: repeat(2, minmax(0, 1fr));}
-    }
-    @media (max-width: 560px){
-      .grid{grid-template-columns: 1fr;}
-    }
-
-    a.card{
-      text-decoration:none;
-      color: inherit;
+    .toolBtn{
+      height:58px;
+      width:100%;
       display:flex;
-      flex-direction:column;
-      gap:10px;
-      padding: 14px 14px 13px;
-      border-radius: var(--radius);
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      box-shadow: 0 10px 24px rgba(0,0,0,.25);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
-      position:relative;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:8px 14px;
+      border-radius:17px;
+      border:1px solid var(--btnBorder);
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.18) 42%,rgba(255,255,255,0) 43%),
+        linear-gradient(180deg,var(--btn1),var(--btn2));
+      color:var(--btnText);
+      text-decoration:none;
+      font-size:15px;
+      font-weight:900;
+      line-height:1.15;
+      letter-spacing:.1px;
+      box-shadow:0 8px 18px rgba(0,0,0,.20), inset 0 1px 0 rgba(255,255,255,.75);
+      transition:transform .16s ease, filter .16s ease, box-shadow .16s ease, border-color .16s ease;
       overflow:hidden;
     }
 
-    a.card::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: radial-gradient(520px 180px at 30% 0%, rgba(255,255,255,.12), transparent 60%);
-      opacity:.9;
-      pointer-events:none;
+    .toolBtn:hover{
+      transform:translateY(-2px);
+      filter:saturate(1.08) brightness(1.02);
+      border-color:#81c2d2;
+      box-shadow:0 13px 24px rgba(0,0,0,.26), 0 0 0 3px rgba(74,222,255,.10), inset 0 1px 0 rgba(255,255,255,.8);
     }
 
-    a.card:hover{
-      transform: translateY(-3px);
-      border-color: rgba(255,255,255,.22);
-      background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.07));
+    .toolBtn:active{
+      transform:translateY(0) scale(.99);
     }
 
-    .topline{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      position:relative;
-      z-index:1;
+    .toolBtn span{
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
     }
 
-    .name{
-      font-weight: 750;
-      letter-spacing:.2px;
-      line-height:1.15;
+    .empty{
+      padding:14px;
+      border-radius:18px;
+      text-align:center;
+      font-weight:800;
+      color:rgba(255,255,255,.84);
+      background:rgba(255,255,255,.075);
+      border:1px dashed rgba(255,255,255,.18);
     }
-
-    .tag{
-      font-size: 12px;
-      padding:6px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.20);
-      color: rgba(255,255,255,.86);
-      white-space:nowrap;
-    }
-
-    .desc{
-      margin:0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height:1.5;
-      position:relative;
-      z-index:1;
-    }
-
-    .cta{
-      margin-top:auto;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color: rgba(255,255,255,.90);
-      font-size: 13px;
-      position:relative;
-      z-index:1;
-    }
-    .arrow{
-      width:26px;height:26px;
-      display:grid; place-items:center;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      transition: transform .18s ease;
-    }
-    a.card:hover .arrow{ transform: translateX(2px); }
 
     footer{
-      margin-top: 16px;
-      padding: 14px 12px 4px;
+      margin-top:16px;
       text-align:center;
-      color: rgba(255,255,255,.65);
-      font-size: 12px;
+      color:rgba(255,255,255,.68);
+      font-size:12px;
+      font-weight:700;
     }
 
-    .hint{
-      margin-top: 10px;
-      padding: 12px 14px;
-      border-radius: 16px;
-      border:1px dashed rgba(255,255,255,.22);
-      background: rgba(0,0,0,.14);
-      color: rgba(255,255,255,.78);
-      font-size: 13px;
-      line-height: 1.5;
-    }
+    @media (max-width:760px){
+      .hero{
+        align-items:stretch;
+        flex-direction:column;
+      }
 
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      padding: 2px 6px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.85);
-      font-size: 12px;
+      h1{
+        white-space:normal;
+        text-align:center;
+      }
+
+      .search{
+        width:100%;
+      }
+
+      .grid{
+        grid-template-columns:1fr;
+      }
+
+      .toolBtn{
+        height:54px;
+        font-size:14px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="blob b1"></div>
-  <div class="blob b2"></div>
-  <div class="blob b3"></div>
-
   <div class="wrap">
-    <header>
-      <div class="brand">
+    <div class="topbar">
+      <div class="hero">
         <h1>🧰 Panel de Herramientas</h1>
-        <p>
-          Acceso rápido a tus herramientas de empresa y personales. Solo agrega tus links en la lista (abajo) y listo 🚀
-        </p>
-        <div class="hint">
-          💡 Tip: Para agregar enlaces, busca <span class="kbd">LINK_AQUI</span> en el código y reemplaza con tu URL.
-        </div>
-      </div>
 
-      <div class="controls">
-        <div class="search" title="Buscar herramienta">
+        <label class="search" title="Buscar herramienta">
           <span>🔎</span>
-          <input id="q" type="text" placeholder="Buscar (ej: moto, rutina, trackings)..." autocomplete="off" />
-        </div>
-
-        <div class="pillrow">
-          <div class="pill"><span class="dot purple"></span> Empresa</div>
-          <div class="pill"><span class="dot green"></span> Personal</div>
-          <div class="pill"><span class="dot green"></span> Vendedores</div>
-          <div class="pill"><span class="dot cyan"></span> Rápido</div>
-          <div class="pill"><span class="dot amber"></span> Ordenado</div>
-        </div>
+          <input id="q" type="search" placeholder="Buscar herramienta..." autocomplete="off">
+        </label>
       </div>
-    </header>
+    </div>
 
     <main id="app"></main>
 
     <footer>
-      <div>✨ Creador: Brayan Raudales</div>
-      <div id="year"></div>
+      ✨ Creador: Brayan Raudales · <span id="year"></span>
     </footer>
   </div>
 
   <script>
-    // ==========================================================
-    // ✅ AQUÍ SOLO PEGAS TUS LINKS (donde dice: "LINK_AQUI")
-    // ==========================================================
     const SECTIONS = [
       {
-        title: "🏢 Herramientas para la Empresa",
-        subtitle: "Gestión, envíos, agua-marca, cargas, trackings e inventario.",
-        badge: "Empresa",
+        title: "🏢 Empresa",
         tools: [
           {
             name: "🛵 Costos de Envío Moto",
-            desc: "Consulta rápida de tarifas por colonia / zona.",
-            href: "https://www.costoenvios.itemshn.com"
+            href: "https://www.costoenvios.itemshn.com",
+            keywords: "moto envios delivery tarifas colonia zona"
           },
           {
-            name: "📍 Links Cargo Expreso",
-            desc: "Monitorea paquetes, estados y encargos.",
-            href: "https://www.link.itemshn.com/"
-          },
-          {
-            name: "📍 PLANTILLA DE EDICION",
-            desc: "Cambia precio, Plantilla y Foto.",
-            href: "https://catalogoshn.github.io/plantillaprecio/"
+            name: "📍 Link CAEX / Cargo Expreso",
+            href: "https://www.link.itemshn.com/",
+            keywords: "caex cargo expreso guia rastreo tracking link"
           },
           {
             name: "🖼️ Fotos Marca Agua",
-            desc: "Marca tus fotos para evitar robos de imágenes.",
-            href: "https://www.fotos.itemshn.com/"
+            href: "https://www.fotos.itemshn.com/",
+            keywords: "fotos imagenes marca agua watermark"
           },
           {
-            name: "🖼️ Videos y Fotos Marca Agua",
-            desc: "Marca tus videos/fotos para evitar robos de imágenes.",
-            href: "https://www.videos.itemshn.com/"
+            name: "🎥 Videos y Fotos Marca Agua",
+            href: "https://www.videos.itemshn.com/",
+            keywords: "videos fotos marca agua watermark"
           },
           {
             name: "📦 Calculadora de Cargas Peso/Volumen",
-            desc: "Calcula peso volumétrico vs peso real.",
-            href: "https://www.cajas.itemshn.com"
+            href: "https://www.cajas.itemshn.com",
+            keywords: "cajas cargas peso volumen volumetrico"
           },
           {
             name: "📍 Seguimiento de Trackings y Encargos",
-            desc: "Monitorea paquetes, estados y encargos.",
-            href: "https://www.trackings.itemshn.com/"
+            href: "https://www.trackings.itemshn.com/",
+            keywords: "trackings tracking encargos paquetes seguimiento"
           },
           {
-            name: "📍 Inventario OFICIAL",
-            desc: "Inventario paquetes, estados y Gastos.",
-            href: "https://www.merca.itemshn.com/"
+            name: "📦 Inventario OFICIAL",
+            href: "https://www.merca.itemshn.com/",
+            keywords: "inventario oficial merca stock productos gastos paquetes"
           }
-      
-          
         ]
       },
       {
-        title: "🏢 Herramientas para los Vendedores y Moto",
-        subtitle: "Gestión, envíos, Deudas Moto, Comisiones y Ganancias Vendedores.",
-        badge: "Vendedores",
+        title: "🏍️ Vendedores y Moto",
         tools: [
           {
             name: "🧾 Deudas Entregador de Moto",
-            desc: "Control y registro de deudas del entregador.",
-            href: "https://www.deudasmoto.itemshn.com/"
+            href: "https://www.deudasmoto.itemshn.com/",
+            keywords: "deudas entregador moto cobros"
           },
           {
             name: "📋 Deudas Entregador de Moto Pega",
-            desc: "Controla Comisiones, ventas entradas y salidas.",
-            href: "https://catalogoshn.github.io/DEUDASMOTOPRO/"
+            href: "https://catalogoshn.github.io/DEUDASMOTOPRO/",
+            keywords: "deudas moto pega pro comisiones ventas"
           },
           {
             name: "📋 Calculadora Vendedores Comisiones",
-            desc: "Controla Comisiones, ventas entradas y salidas.",
-            href: "https://www.vendedores.itemshn.com/"
+            href: "https://www.vendedores.itemshn.com/",
+            keywords: "vendedores comisiones calculadora ventas"
           },
           {
-            name: "📋 Ganancias Vendedores Web",
-            desc: "Controla Comisiones, ventas entradas y salidas.",
-            href: "https://www.gananciasvendedores.itemshn.com/"
-          } 
-          
+            name: "💰 Ganancias Vendedores Web",
+            href: "https://www.gananciasvendedores.itemshn.com/",
+            keywords: "ganancias vendedores web comisiones"
+          }
         ]
       },
       {
-        title: "👤 Herramientas personales",
-        subtitle: "Rutinas alimenticias y cuidado de Firulais 🐾",
-        badge: "Personal",
+        title: "👤 Personales",
         tools: [
           {
             name: "🥗 Rutina Alimenticia A",
-            desc: "Plan de comidas, porciones y horarios.",
-            href: "https://www.rutinah.itemshn.com"
+            href: "https://www.rutinah.itemshn.com",
+            keywords: "rutina alimenticia dieta comida"
           },
           {
             name: "🥑 Rutina Alimenticia Mayra",
-            desc: "Rutina diaria y objetivos nutricionales.",
-            href: "https://www.rutinam.itemshn.com"
+            href: "https://www.rutinam.itemshn.com",
+            keywords: "rutina alimenticia mayra dieta comida"
           },
           {
             name: "🦜 Rutina Pericos",
-            desc: "Alimentación, paseo, vacunas y notas.",
-            href: "https://www.pericos.itemshn.com"
+            href: "https://www.pericos.itemshn.com",
+            keywords: "rutina pericos aves comida"
           }
         ]
       }
     ];
 
-    // Render
     const app = document.getElementById("app");
     const input = document.getElementById("q");
 
-    function safeHref(href) {
-      // Si no has puesto link todavía, dejamos "#"
-      if (!href || href === "LINK_AQUI") return "#";
-      return href;
+    function safeHref(href){
+      return href && href !== "LINK_AQUI" ? href : "#";
     }
 
-    function makeCard(tool, sectionBadge){
+    function makeButton(tool){
       const a = document.createElement("a");
-      a.className = "card";
+      a.className = "toolBtn";
       a.href = safeHref(tool.href);
-      a.target = (a.href === "#") ? "_self" : "_blank";
+      a.target = a.href === "#" ? "_self" : "_blank";
       a.rel = "noopener noreferrer";
+      a.dataset.search = `${tool.name} ${tool.keywords || ""}`.toLowerCase();
 
-      const topline = document.createElement("div");
-      topline.className = "topline";
+      const span = document.createElement("span");
+      span.textContent = tool.name;
 
-      const name = document.createElement("div");
-      name.className = "name";
-      name.textContent = tool.name;
-
-      const tag = document.createElement("div");
-      tag.className = "tag";
-      tag.textContent = sectionBadge;
-
-      topline.appendChild(name);
-      topline.appendChild(tag);
-
-      const desc = document.createElement("p");
-      desc.className = "desc";
-      desc.textContent = tool.desc || "Abrir herramienta.";
-
-      const cta = document.createElement("div");
-      cta.className = "cta";
-      cta.innerHTML = (a.href === "#")
-        ? `🧩 Agrega el link en el código <span class="arrow">➜</span>`
-        : `🚀 Abrir ahora <span class="arrow">➜</span>`;
-
-      a.appendChild(topline);
-      a.appendChild(desc);
-      a.appendChild(cta);
-
-      // Guardamos texto para búsqueda
-      a.dataset.search = `${tool.name} ${tool.desc} ${sectionBadge}`.toLowerCase();
+      a.appendChild(span);
       return a;
     }
 
-    function render(filter=""){
+    function render(filter = ""){
       app.innerHTML = "";
-      const f = filter.trim().toLowerCase();
+      const q = filter.trim().toLowerCase();
+      let total = 0;
 
-      SECTIONS.forEach(sec => {
-        const section = document.createElement("section");
-        section.className = "section";
+      SECTIONS.forEach(section => {
+        const buttons = section.tools
+          .map(makeButton)
+          .filter(btn => !q || btn.dataset.search.includes(q));
+
+        if(!buttons.length) return;
+
+        total += buttons.length;
+
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "section";
 
         const head = document.createElement("div");
         head.className = "sectionHead";
 
-        const left = document.createElement("div");
-        const h = document.createElement("h2");
-        h.className = "sectionTitle";
-        h.textContent = sec.title;
-
-        const sub = document.createElement("div");
-        sub.className = "sectionSub";
-        sub.textContent = sec.subtitle || "";
-
-        left.appendChild(h);
-        left.appendChild(sub);
+        const title = document.createElement("h2");
+        title.className = "sectionTitle";
+        title.textContent = section.title;
 
         const count = document.createElement("div");
         count.className = "count";
+        count.textContent = buttons.length;
 
         const grid = document.createElement("div");
         grid.className = "grid";
 
-        const cards = sec.tools
-          .map(t => makeCard(t, sec.badge))
-          .filter(card => !f || card.dataset.search.includes(f));
+        buttons.forEach(btn => grid.appendChild(btn));
 
-        cards.forEach(c => grid.appendChild(c));
-
-        count.textContent = `📌 ${cards.length} herramienta(s)`;
-        head.appendChild(left);
+        head.appendChild(title);
         head.appendChild(count);
-
-        section.appendChild(head);
-        section.appendChild(grid);
-
-        // Si con el filtro quedó vacío, ocultamos sección completa
-        if (cards.length > 0) app.appendChild(section);
+        sectionEl.appendChild(head);
+        sectionEl.appendChild(grid);
+        app.appendChild(sectionEl);
       });
 
-      // Si no hay nada
-      if (!app.children.length){
+      if(!total){
         const empty = document.createElement("div");
-        empty.className = "hint";
-        empty.style.marginTop = "16px";
-        empty.textContent = "😅 No encontré resultados. Prueba con otra palabra (ej: moto, rutina, fotos, inventario).";
+        empty.className = "empty";
+        empty.textContent = "No encontré esa herramienta.";
         app.appendChild(empty);
       }
     }
 
     input.addEventListener("input", () => render(input.value));
-    document.getElementById("year").textContent = `© ${new Date().getFullYear()} — Panel privado`;
-
+    document.getElementById("year").textContent = `© ${new Date().getFullYear()}`;
     render();
   </script>
 </body>
-
 </html>
-
-
-
-
-
